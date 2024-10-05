@@ -2,7 +2,7 @@
 
 This project is a chess engine designed to let users play against the chess engin or another human player. It uses Minimax and Alpha Beta Pruning to calculate the best move. 
 
-The project is a desktop application which provides a Chess board to play and a Chess engine which can play moves on the board. It is built using C++ and relies upon the SDL2 and SDL2_image libraries to provide a GUI to play on whereas the engine does not use any third party libraries. The chess engine is it's own standalone module and can be used in other projects as a bot opponent. Instructions on how to interact with it will can be found [here](## Instructions On How To Interact With the Engine)
+The project is a desktop application which provides a Chess board to play and a Chess engine which can play moves on the board. It is built using C++ and relies upon the SDL2 and SDL2_image libraries to provide a GUI to play on whereas the engine does not use any third party libraries. The chess engine is it's own standalone module and can be used in other projects as a bot opponent. Instructions on how to interact with it will can be found [here](#Instructions On How To Interact With the Engine)
 
 The ambition behind this project is to develop a fully functional chess engine that could be used either as a standalone app or as a backend for a larger chess platform. It's aimed at providing a competitive and enjoyable experience for chess players of all skill levels.
 
