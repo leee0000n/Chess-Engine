@@ -161,6 +161,8 @@ Current known issues are:
  - The engine doesn't really like its king that much
  - The engine refuses to castle
  - The engine takes too long at depths of 6 or higher
+ - No draw by repition, 50 move rule or if there is a dead position
+ - Cannot resign or draw without closing the program
 
 ## Acknowledgments
 Some code has been borrowed or adapted from third party sources.
