@@ -24,7 +24,6 @@ The ambition behind this project is to develop a fully functional chess engine, 
 Current features:
  - A chess board that allows for play against the engine or against another person on the same computer
  - An engine that can make moves on the board when it is its turn to do so
- - 
 
 ## Technologies Used
  - **Programming language**: C++
