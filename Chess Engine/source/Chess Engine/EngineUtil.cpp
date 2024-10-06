@@ -5,7 +5,8 @@
 ChessEngine::ChessEngine(int depth, unsigned int seed, int engineColour) {
 	m_depth = depth;
 	m_randomSeed = seed;
-	m_engineColour = engineColour;
+	if (engineColour >= 1 && engineColour <= 2) m_engineColour = engineColour;
+	else m_engineColour = BLACK_AS_2;
 }
 
 std::string validateFENString(std::string FEN) {

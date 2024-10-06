@@ -145,9 +145,8 @@ public:
 	/// <summary>
 	/// Start alpha beta pruning from outside caller and pick correct alpha beta pruning method based off of engine colour. Black = min, White = max
 	/// </summary>
-	/// <param name="engineColour"> Colour played by engine</param>
 	/// <returns> Move played by engine</returns>
-	int playEngineMove(int engineColour);
+	int playEngineMove();
 
 	/// <summary>
 	/// Alpha beta pruning MAX. Represents white

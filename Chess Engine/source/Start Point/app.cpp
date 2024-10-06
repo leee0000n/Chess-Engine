@@ -24,7 +24,7 @@ std::array<std::string, 128> b = { "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8
 									 "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "0", "0", "0", "0", "0", "0", "0", "0" };
 
 void chessGame() {
-	std::string FEN = "K3k2r/3ppp2/8/n7/8/8/8/6b1 b k - 0 1";
+	std::string FEN = "startingposition";
 	const int depth = 5;
 	const int seed = 33;
 

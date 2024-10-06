@@ -3,18 +3,16 @@
 #include <iostream>
 
 
-int ChessEngine::playEngineMove(int engineColour) {
-    
-    if (engineColour != m_engineColour) throw;
+int ChessEngine::playEngineMove() {
 
     m_nextEncodedMove = 0;
 
     int encodedInfo = ENCODE_INFO(m_colourToPlay, m_castlingRights, m_enpassantSquare, m_whiteKingSquare, m_blackKingSquare);
     int score;
-    if (engineColour == WHITE_AS_1) {
+    if (m_engineColour == WHITE_AS_1) {
         score = ABMax(-INT_MAX, INT_MAX, m_depth, encodedInfo, m_board, m_piecePositions, m_lookupPiece);
     }
-    else if (engineColour == BLACK_AS_2) {
+    else if (m_engineColour == BLACK_AS_2) {
         score = ABMin(-INT_MAX, INT_MAX, m_depth, encodedInfo, m_board, m_piecePositions, m_lookupPiece);
     }
 

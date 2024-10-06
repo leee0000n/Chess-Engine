@@ -35,7 +35,7 @@ bool Chess::playMove(int moveData) {
 void Chess::playEngineMove() {
 	if (m_colourToPlay != m_engineColour) throw;
 
-	int movePlayed = m_engine->playEngineMove(m_engineColour);
+	int movePlayed = m_engine->playEngineMove();
 
 	makeMove(movePlayed);
 
