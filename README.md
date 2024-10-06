@@ -27,8 +27,8 @@ Current features:
  - 
 
 ## Technologies Used
-Programming language: C++
-Libraries: SDL2, SDL2_image
+ - **Programming language**: C++
+ - **Libraries**: SDL2, SDL2_image
 
 ## Installation
 
