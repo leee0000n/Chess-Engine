@@ -152,7 +152,6 @@ Current features in the works are:
  - Adding features in the GUI to make it easier to configure the engine
  - Changing piece designs to something easier to see
  - Removing bugs
- - 
 ## Known Issues
 Current known issues are:
  - No easy way to configure the engine
