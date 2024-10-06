@@ -21,9 +21,14 @@ This project is a chess engine designed to let users play against the chess engi
 The ambition behind this project is to develop a fully functional chess engine, for positions reachable in a normal game, that could be used either as a standalone app or as a backend for a larger chess platform. It's aimed at providing a competitive and enjoyable experience for chess players of all skill levels.
 
 ## Features
+Current features:
+ - A chess board that allows for play against the engine or against another person on the same computer
+ - An engine that can make moves on the board when it is its turn to do so
+ - 
 
 ## Technologies Used
-It is built using C++ and relies upon the SDL2 and SDL2_image libraries to provide a GUI to play on whereas the engine does not use any third party libraries. 
+Programming language: C++
+Libraries: SDL2, SDL2_image
 
 ## Installation
 
@@ -78,7 +83,7 @@ int playEngineMove();
 ```
 This method returns the move played in the encoded form described [here](#how-moves-are-encoded).
 
-### How Moves Are Encode
+### How Moves Are EncodeD
 All moves are encoded in a 4 byte integer. Below is a table which shows what each group of bits in the integer represents.
 
 | Bits | Meaning |
@@ -135,15 +140,29 @@ The chess engine header file (`ChessEngine.h`), contains some macros which can b
 
 ## Project Status
 ### Notable Wins
+Current notable wins are:
+ - once against me (rated 1500 on [chess.com](https://www.chess.com/member/jaan2trappy)
+ - 3 times against my friend (rated 1100 on [chess.com](https://www.chess.com/member/k26s)
+ - fairy stockfish 14 level 5 on [lichess.com](https://lichess.org/)
+
 ### Upcoming Features
+Current features in the works are:
+ - Using zobrist hashing to store positions in a hash table to improve search speeds
+ - Creating an opening database
+ - Adding features in the GUI to make it easier to configure the engine
+ - Changing piece designs to something easier to see
+ - Removing bugs
+ - 
 ## Known Issues
+Current known issues are:
+ - No easy way to configure the engine
+ - No numbers and letters along the edge of the board to easily tell co-oridnates of each square
+ - The user can move the engine's pieces
+ - The engine doesn't really like its king that much
+ - The engine refuses to castle
+ - The engine takes too long at depths of 6 or higher
+
 ## Acknowledgments
-
-Currently, the project is a work in progress. Basic game mechanics, including the rules of chess and AI move generation, are in place. The following tasks are still pending:
-
-Enhancing the AI with stronger algorithms (or integrating Stockfish)
-Improving the graphical user interface
-Adding support for multiplayer games and save/reload functionality
-Known issues include occasional bugs in detecting checkmate and stalemate situations, and the AI’s performance at higher difficulty levels is not yet fully optimized. Additionally, the user interface is basic and needs more refinement for a polished final product.
-
-
+Some code has been borrowed or adapted from third party sources.
+The sources and what has been borrowed are:
+ - Boiler plate code related to SDL2 and SDL2_image ([Beginning Game Programming v2.0](https://lazyfoo.net/tutorials/SDL/))
