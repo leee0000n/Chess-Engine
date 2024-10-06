@@ -141,8 +141,8 @@ The chess engine header file (`ChessEngine.h`), contains some macros which can b
 ## Project Status
 ### Notable Wins
 Current notable wins are:
- - once against me (rated 1500 on [chess.com](https://www.chess.com/member/jaan2trappy)
- - 3 times against my friend (rated 1100 on [chess.com](https://www.chess.com/member/k26s)
+ - once against me (rated 1500 on [chess.com](https://www.chess.com/member/jaan2trappy))
+ - 3 times against my friend (rated 1100 on [chess.com](https://www.chess.com/member/k26s))
  - fairy stockfish 14 level 5 on [lichess.com](https://lichess.org/)
 
 ### Upcoming Features
