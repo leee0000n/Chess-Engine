@@ -51,7 +51,7 @@ All settings should be correct, but if there are linker errors when attempting t
 2. In "Linker->General"
   - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "Additional library directories" field
 3. In "Linker->Input"
-  - In the additional dependencies field, it should have "SDL2.lib;SDL2_image.lib;
+  - In the additional dependencies field, it should have "SDL2.lib;SDL2main.lib;SDL2_image.lib;
 
 If there are still errors, make sure SDL2.dll and SDL2_image.dll are present, otherwise create a new project and transfer all the folders over to the new project and go through the steps above
 
@@ -59,7 +59,7 @@ If there are still errors, make sure SDL2.dll and SDL2_image.dll are present, ot
 If you are not using Visual Studio then ensure that you do the following:
 1. Specify directory to SDL2 and SDL2_image include and library folders
 2. Specify directory to the header folder
-3. Add the additional dependencies "SDL2.lib" and "SDL2_image.lib"
+3. Add the additional dependencies "SDL2.lib", "SDL2main.lib" and "SDL2_image.lib"
 
 
 
