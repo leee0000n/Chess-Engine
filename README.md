@@ -7,6 +7,9 @@ This project is a chess engine designed to let users play against the chess engi
   - [Features](#features)
   - [Technologies Used](#technologies-used)
   - [Installation](#installation)
+      - [Visual Studio](#visual-studio)
+          - [Issues With Installing](#issues-with-installing)
+      - [Other Environments](#other-environments)
   - [Usage](#usage)
       - [Playing With Two Humans](#playing-with-two-humans)
       - [Playing Against the Engine](#playing-against-the-engine )
@@ -30,6 +33,35 @@ Current features:
  - **Libraries**: SDL2, SDL2_image
 
 ## Installation
+### Visual Studio
+1. Open Visual Studio
+2. Click on "Clone a Repository" on the right side
+3. Paste ["https://github.com/leee0000n/Chess-Engine"](https://github.com/leee0000n/Chess-Engine) in the "Repository Location" field
+4. Click on clone at the bottom right
+
+#### Issues with installing
+**WARNING**
+Do __**NOT**__ move the solution file, otherwise the program will not run due to linker errors and you will have to mess around with the properties of the project.
+
+All settings should be correct, but if there are linker errors when attempting to run the application, make sure that the following are present in the properties menu:
+1. In "VC++ directories"
+  - All include folders in third-party directory (SDL2\include and SDL2_image\include) are in the "include directories" field
+  - the header folder is in the include directory field
+  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "library directories" field
+2. In "Linker->General"
+  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "Additional library directories" field
+3. In "Linker->Input"
+  - In the additional dependencies field, it should have "SDL2.lib;SDL2_image.lib;
+
+If there are still errors, make sure SDL2.dll and SDL2_image.dll are present, otherwise create a new project and transfer all the folders over to the new project and go through the steps above
+
+### Other environments
+If you are not using Visual Studio then ensure that you do the following:
+1. Specify directory to SDL2 and SDL2_image include and library folders
+2. Specify directory to the header folder
+3. Add the additional dependencies "SDL2.lib" and "SDL2_image.lib"
+
+
 
 ## Usage
 ### Playing With Two Humans
