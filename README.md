@@ -40,7 +40,7 @@ Current features:
 4. Click on clone at the bottom right
 
 #### Issues with installing
-**WARNING**
+
 Do __**NOT**__ move the solution file, otherwise the program will not run due to linker errors and you will have to mess around with the properties of the project.
 
 All settings should be correct, but if there are linker errors when attempting to run the application, make sure that the following are present in the properties menu:
