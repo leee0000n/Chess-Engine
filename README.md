@@ -100,7 +100,7 @@ int playEngineMove();
 ```
 This method returns the move played in the encoded form described [here](#how-moves-are-encoded).
 
-### How Moves Are EncodeD
+### How Moves Are Encoded
 All moves are encoded in a 4 byte integer. Below is a table which shows what each group of bits in the integer represents.
 
 | Bits | Meaning |
