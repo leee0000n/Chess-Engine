@@ -7,10 +7,7 @@ This project is a chess engine designed to let users play against the chess engi
   - [Project Ambitions](#project-ambitions)
   - [Features](#features)
   - [Technologies Used](#technologies-used)
-  - [Installation](#installation)
-      - [Visual Studio](#visual-studio)
-          - [Issues With Installing](#issues-with-installing)
-      - [Other Environments](#other-environments)
+  - [How To Build](#how-to-build)
   - [Usage](#usage)
       - [Playing With Two Humans](#playing-with-two-humans)
       - [Playing Against the Engine](#playing-against-the-engine )
@@ -37,36 +34,20 @@ Current features:
  - **Programming language**: C++
  - **Libraries**: SDL2, SDL2_image
 
-## Installation
-### Visual Studio
-1. Open Visual Studio
-2. Click on "Clone a Repository" on the right side
-3. Paste ["https://github.com/leee0000n/Chess-Engine"](https://github.com/leee0000n/Chess-Engine) in the "Repository Location" field
-4. Click on clone at the bottom right
+## How To Build
+This project has only been tested on **Windows 10 and 11** using the **MSCV Compiler** and **Visual Studio** IDE. May or may not work on other environments
+**CMake** and **Git** are both required for the project to build.
 
-#### Issues with installing
+For Visual Studio, after the project is cloned, it should build itself automatically when opened.
+It can also be built using the following commands
+``` bash
+cd <CMakeLists.txt dir goes here>
 
-Do __**NOT**__ move the solution file, otherwise the program will not run due to linker errors and you will have to mess around with the properties of the project.
+cmake ..
+cmake --build
 
-All settings should be correct, but if there are linker errors when attempting to run the application, make sure that the following are present in the properties menu:
-1. In "VC++ directories"
-  - All include folders in third-party directory (SDL2\include and SDL2_image\include) are in the "include directories" field
-  - the header folder is in the include directory field
-  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "library directories" field
-2. In "Linker->General"
-  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "Additional library directories" field
-3. In "Linker->Input"
-  - In the additional dependencies field, it should have "SDL2.lib;SDL2main.lib;SDL2_image.lib;
-
-If there are still errors, make sure SDL2.dll and SDL2_image.dll are present, otherwise create a new project and transfer all the folders over to the new project and go through the steps above
-
-### Other environments
-If you are not using Visual Studio then ensure that you do the following:
-1. Specify directory to SDL2 and SDL2_image include and library folders
-2. Specify directory to the header folder
-3. Add the additional dependencies "SDL2.lib", "SDL2main.lib" and "SDL2_image.lib"
-
-
+myproject.exe
+```
 
 ## Usage
 ### Playing With Two Humans
