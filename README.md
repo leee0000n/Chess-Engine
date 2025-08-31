@@ -39,7 +39,7 @@ This project has only been tested on **Windows 10 and 11** using the **MSCV Comp
 **CMake** and **Git** are both required for the project to build.
 
 For Visual Studio, after the project is cloned, it should build itself automatically when opened.
-It can also be built using the following commands
+It can also be built pasting the following commands in the terminal.
 ``` bash
 cd <CMakeLists.txt dir goes here>
 
