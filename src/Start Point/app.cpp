@@ -61,7 +61,7 @@ void app::run() {
 		printf("Failed to initialize");
 	}
 	else {
-		if (!(loadMedia("resource/chess.png"))) {
+		if (!(loadMedia("resources/chess.png"))) {
 			printf("Failed to load media");
 		}
 		else

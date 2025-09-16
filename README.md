@@ -1,27 +1,24 @@
 # Chess Engine
 
-This project is a chess engine designed to let users play against the chess engine or another human player. The project is a desktop application that provides a chessboard to play and a Chess engine that can make moves on the board. The chess engine is its own standalone module and can be used in other projects as a bot opponent. 
+This project is a chess engine designed to let users play against the chess engin or another human player. It uses Minimax and Alpha Beta Pruning to calculate the best move. The project is a desktop application which provides a Chess board to play and a Chess engine which can play moves on the board. The chess engine is it's own standalone module and can be used in other projects as a bot opponent. 
 
 ## Table of Contents
-  - [Demo Video](#demo-video)
   - [Project Ambitions](#project-ambitions)
   - [Features](#features)
   - [Technologies Used](#technologies-used)
-  - [How To Build](#how-to-build)
+  - [Installation](#installation)
+      - [Visual Studio](#visual-studio)
+          - [Issues With Installing](#issues-with-installing)
+      - [Other Environments](#other-environments)
   - [Usage](#usage)
       - [Playing With Two Humans](#playing-with-two-humans)
       - [Playing Against the Engine](#playing-against-the-engine )
       - [Integrating the Engine into Your Projects](#integrating-the-engine-into-your-projects)
-  - [Optimization](#optimization)
   - [Project Status](#project-status)
       - [Notable Wins](#notable-wins)
       - [Upcoming Features](#upcoming-features)
   - [Known Issues](#known-issues)
   - [Ackowledgments](#acknowledgments)
-
-## Demo Video
-ENJOY <3!
-- https://youtu.be/yxcCfkrmu7o
 
 ## Project Ambitions
 The ambition behind this project is to develop a fully functional chess engine, for positions reachable in a normal game, that could be used either as a standalone app or as a backend for a larger chess platform. It's aimed at providing a competitive and enjoyable experience for chess players of all skill levels.
@@ -35,24 +32,40 @@ Current features:
  - **Programming language**: C++
  - **Libraries**: SDL2, SDL2_image
 
-## How To Build
-This project has only been tested on **Windows 10 and 11** using the **MSCV Compiler** and **Visual Studio** IDE. May or may not work on other environments
-**CMake** and **Git** are both required for the project to build.
+## Installation
+### Visual Studio
+1. Open Visual Studio
+2. Click on "Clone a Repository" on the right side
+3. Paste ["https://github.com/leee0000n/Chess-Engine"](https://github.com/leee0000n/Chess-Engine) in the "Repository Location" field
+4. Click on clone at the bottom right
 
-For Visual Studio, after the project is cloned, it should build itself automatically when opened.
-It can also be built by pasting the following commands in the terminal.
-``` bash
-cd <CMakeLists.txt dir goes here>
+#### Issues with installing
 
-cmake ..
-cmake --build
+Do __**NOT**__ move the solution file, otherwise the program will not run due to linker errors and you will have to mess around with the properties of the project.
 
-myproject.exe
-```
+All settings should be correct, but if there are linker errors when attempting to run the application, make sure that the following are present in the properties menu:
+1. In "VC++ directories"
+  - All include folders in third-party directory (SDL2\include and SDL2_image\include) are in the "include directories" field
+  - the header folder is in the include directory field
+  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "library directories" field
+2. In "Linker->General"
+  - All library folders in third-party directory (SDL2\lib\x64 and SDL_image\lib\x64) are in the "Additional library directories" field
+3. In "Linker->Input"
+  - In the additional dependencies field, it should have "SDL2.lib;SDL2main.lib;SDL2_image.lib;
+
+If there are still errors, make sure SDL2.dll and SDL2_image.dll are present, otherwise create a new project and transfer all the folders over to the new project and go through the steps above
+
+### Other environments
+If you are not using Visual Studio then ensure that you do the following:
+1. Specify directory to SDL2 and SDL2_image include and library folders
+2. Specify directory to the header folder
+3. Add the additional dependencies "SDL2.lib", "SDL2main.lib" and "SDL2_image.lib"
+
+
 
 ## Usage
 ### Playing With Two Humans
-Currently, there is no variable which can be changed in the code which could make this happen easily. To accomplish this, the user must change a few lines of code in `App.cpp` inside the main app loop. 
+Currently, there is no variable which can be changed in the code which could make this happen easily. To accomplish this, the user must change a few lines of code in ```App.cpp``` inside the main app loop. 
 ```cpp
 if (!game.isEnginesTurnToPlay()) eventHandler.pollEvent();
 else {
@@ -63,31 +76,31 @@ These lines must be changed to...
 ```cpp
 eventHandler.pollEvent();
 ```
-... for epik two-player gaming to be enabled
+... for epik two player gaming to be enabled
 
 ### Playing Against the Engine
-As of now, the engine is ready to play against as soon as you download the code. To change the colour that the engine plays, you must change one argument in `App.cpp`.
+As of now, the engine is ready to play against as soon as you download the code. To change the colour that the engine plays, you must change one argument in ```App.cpp```.
 ```cpp
 game.initEngine(depth, seed, BLACK_AS_2, FEN);
 ```
 The 3rd argument controls the engine's colour. To switch it to white, change the argument to ```WHITE_AS_1```
 
-The user can also change the depth that the engine searches by changing the value stored in ```depth```, which is initialised a few lines above the previous bit of code, or by changing the respective argument in the code above. However, this is not recommended as in the current version of the engine, a depth of 5 is the highest it can go to whilst playing its moves at an acceptable speed.
+The user also has the ability to change the depth that the engine searches to by changing the value stored in ```depth```, which is initalized a few lines above the previous bit of code, or by changing the respective argument in the code above. However, this is not recommended as in the current version of the engine, a depth of 5 is the highest it can go to whilst playing its moves at an acceptable speed.
 
 ### Integrating the Engine into Your Project
-If the user is interested in integrating the engine into their projects, they will only need a few methods provided by the engine. They will find these methods in `ChessEngine.h`and all their definitions in the .cpp files whose names start with Engine. These should all be found in the Chess Engine folder.
+If the user is interseted in integrating the engine into their projects, they will only need a few methods provided by the engine. They will find these method in ```ChessEngine.h``` and all their definitions in the .cpp files whose names start with Engine. These should all be found in the Chess Engine folder.
 ```cpp
 ChessEngine(int depth, unsigned int seed, int engineColour);
 ```
-This is the constructor of the ChessEngine class.
+This is the constructer of the ChessEngine class.
 ```seed``` relates to a feature which is currently being worked on.
-For the `engineColour`, the user must pass a 1 for white or a 2 for black. The default is black if neither of these is passed.
+For the ```engineColour```, the user must pass a 1 for white or a 2 for black. The default is black if neither of these are passed.
 ```depth``` is the depth of the search
 
 ```cpp
 void loadFromFen(std::string FEN);
 ```
-This is the method that loads the board state from a FEN string. If the fen string is invalid, it defaults to the starting position. Currently, fen strings that lead to positions where there is an unusual amount of any piece (the number of pieces of that type is more than what is found in a normal game) lead to undefined behaviour.
+This is the method that loads the board state from a fen string. If the fen string is invalid, it defaults to the starting position. Currently, fen strings that lead to positions where there is an unusual amount of any piece (the number of pieces of that type is more than what is found in a normal game) leads undefined behaviour.
 
 ```cpp
 bool playPlayerMove(int encodeMove, int encodedInfo);
@@ -101,8 +114,8 @@ int playEngineMove();
 ```
 This method returns the move played in the encoded form described [here](#how-moves-are-encoded).
 
-### How Moves Are Encoded
-All moves are encoded in a 4-byte integer. Below is a table which shows what each group of bits in the integer represents.
+### How Moves Are EncodeD
+All moves are encoded in a 4 byte integer. Below is a table which shows what each group of bits in the integer represents.
 
 | Bits | Meaning |
 | ---- | ------- |
@@ -114,7 +127,7 @@ All moves are encoded in a 4-byte integer. Below is a table which shows what eac
 | 0001 0000 0000 0000 0000 0000 | enpassant flag |
 | 0010 0000 0000 0000 0000 0000 | castling flag |
 
-The chess engine header file (`ChessEngine.h`) contains some macros that can be used to encode a move and extract information from the encoded move. 
+The chess engine header file (`ChessEngine.h`), contains some macros which can be used to encode a move and extract info from the encoded move. 
 ```cpp
 #define ENCODE_MOVE(source, target, code, pieceCaptured, capturedLookup) ( source | (target << 7) | (code << 14) | (pieceCaptured << 18) | (capturedLookup << 24))
 
@@ -126,7 +139,7 @@ The chess engine header file (`ChessEngine.h`) contains some macros that can be 
 ```
 
 ### How Board States Are Encoded
-All board states are encoded in a 4-byte integer. Below is a table that shows what each group of bits in the integer represents.
+All board states are encoded in a 4 byte integer. Below is a table which shows what each group of bits in the integer represents.
 
 // 1111 1111 1111 1111 1111 1111 1111
 //  $$$ $$$$ |||| |||^ ^^^^ ^^## ##..
@@ -139,7 +152,7 @@ All board states are encoded in a 4-byte integer. Below is a table that shows wh
 | 0000 0000 1111 1110 0000 0000 0000 | square of the white king |
 | 0111 1111 0000 0000 0000 0000 0000 | square of the black king |
 
-The chess engine header file (`ChessEngine.h`) contains some macros that can be used to encode a board state, extract information from the encoded board state, and update a specific property of it. 
+The chess engine header file (`ChessEngine.h`), contains some macros which can be used to encode a board state, extract info from the encoded board state and updata a certain property of it. 
 ```cpp
 #define ENCODE_INFO(colourToPlay, castlingRights, enpassantSquare, whiteKingSquare, blackKingSquare) ((colourToPlay | (castlingRights << 2) | (enpassantSquare << 6) | (whiteKingSquare << 13) | (blackKingSquare << 20)))
 
@@ -156,13 +169,6 @@ The chess engine header file (`ChessEngine.h`) contains some macros that can be 
 #define UPDATE_BLACK_KING_SQUARE(info, blackKingSquare) ((info & 0x80fffff) | (blackKingSquare << 20))
 ```
 
-## Optimization
-Various optimization techniques have been used to speed up the engine's move search. 
-- Instead of creating a tree data structure containing possible board states, the engine works on the same array of memory that the board state is stored in, making and unmaking moves on the same bit of memory, so no new memory is used, which drastically increases the number of positions per second that the engine can evaluate. 
-- Alpha-beta pruning is used to skip entire branches of moves that are guaranteed to be worse than the best move currently found.
-- Lastly, Move ordering has been implemented so the engine searches better moves earlier, allowing branch pruning to happen earlier, so fewer positions and evaluated when searching for the best move.
-
-
 ## Project Status
 ### Notable Wins
 Current notable wins are:
@@ -172,7 +178,7 @@ Current notable wins are:
 
 ### Upcoming Features
 Current features in the works are:
- - Using Zobrist hashing to store positions in a hash table to improve search speeds
+ - Using zobrist hashing to store positions in a hash table to improve search speeds
  - Creating an opening database
  - Adding features in the GUI to make it easier to configure the engine
  - Changing piece designs to something easier to see
@@ -180,15 +186,15 @@ Current features in the works are:
 ## Known Issues
 Current known issues are:
  - No easy way to configure the engine
- - No numbers and letters along the edge of the board to easily tell coordinates of each square
+ - No numbers and letters along the edge of the board to easily tell co-oridnates of each square
  - The user can move the engine's pieces
  - The engine doesn't really like its king that much
  - The engine refuses to castle
  - The engine takes too long at depths of 6 or higher
- - No draw by repetition, 50 move rule, or if there is a dead position
+ - No draw by repition, 50 move rule or if there is a dead position
  - Cannot resign or draw without closing the program
 
 ## Acknowledgments
-Some code has been borrowed or adapted from third-party sources.
+Some code has been borrowed or adapted from third party sources.
 The sources and what has been borrowed are:
  - Boiler plate code related to SDL2 and SDL2_image ([Beginning Game Programming v2.0](https://lazyfoo.net/tutorials/SDL/))
