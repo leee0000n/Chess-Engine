@@ -261,7 +261,7 @@ void Chess::handleEvent(SDL_Event& e) {
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 
-		int square = x / 75 + y / 75 * 16; // Calculate index of square that was clicked on
+		int square = x / 75 + y / 75 * 16; // Calculate index of square that was clicked onalu
 
 		// If a piece has been selected
 		if (m_selectedSquare != -1) {
@@ -294,6 +294,7 @@ void Chess::handleEvent(SDL_Event& e) {
 		}
 		else {
 			if (m_board[square] != 0) { // If a piece is selected
+				if (EXTRACT_PIECE_COLOUR(m_board[square]) != m_colourToPlay) return; // If piece selected is not the colour to play, do nothing (prevents opponent's pieces from being selected
 				m_selectedSquare = square; // Change selectedPieceSquare to square of selected piece
 				generatePseudoLegalMoves();
 			}
