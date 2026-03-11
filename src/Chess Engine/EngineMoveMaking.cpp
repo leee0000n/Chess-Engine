@@ -6,7 +6,7 @@ int knightoffsets[8] = {-33, -31, // 2 rows above
 										  33, 31 };  // 2 rows below
 int directionaloffsets[8] = {-16, -15, 1, 17, 16, 15, -1, -17};
 
-int ChessEngine::makeMove(int encodedMove, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+int ChessEngine::makeMove(int encodedMove, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
 	int source = EXTRACT_SOURCE_SQUARE(encodedMove);
 	int target = EXTRACT_TARGET_SQUARE(encodedMove);
 	int colourToPlay = EXTRACT_COLOUR_TO_PLAY(encodedInfo);
@@ -283,7 +283,7 @@ int ChessEngine::makeMove(int encodedMove, int encodedInfo, int* board, int* pie
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ChessEngine::unmakeMove(int encodedMove, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+void ChessEngine::unmakeMove(int encodedMove, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
 	int source = EXTRACT_SOURCE_SQUARE(encodedMove);
 	int target = EXTRACT_TARGET_SQUARE(encodedMove);
 	int colourToPlay = EXTRACT_COLOUR_TO_PLAY(encodedInfo);
@@ -521,7 +521,7 @@ void ChessEngine::unmakeMove(int encodedMove, int encodedInfo, int* board, int* 
 }
 
 // Refactor to make cleaner
-bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
 	int colourToPlay = SWITCH_COLOUR(EXTRACT_COLOUR_TO_PLAY(encodedInfo));
 	int kingSquare = -1;
 
@@ -548,6 +548,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 		}
 	}
 
+	
+
 	// Up Down Left Right offset
 	for (int i = 0; i < 8; i+=2) {
 		for (int j = 1; j <= 7; j++) {
@@ -561,7 +563,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 			if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) break;
 
 			// If piece is rook or queen
-			if (EXTRACT_PIECE_TYPE(piece) == ROOK || EXTRACT_PIECE_TYPE(piece) == QUEEN) return false;
+			int pieceType = EXTRACT_PIECE_TYPE(piece);
+			if (pieceType == ROOK || pieceType== QUEEN || (pieceType == KING && j == 1)) return false;
 			else if (piece != 0) break;
 		}
 	}
@@ -579,7 +582,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 			if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) break;
 
 			// If piece is rook or queen
-			if (EXTRACT_PIECE_TYPE(piece) == BISHOP || EXTRACT_PIECE_TYPE(piece) == QUEEN) return false;
+			int pieceType = EXTRACT_PIECE_TYPE(piece);
+			if (pieceType == BISHOP || pieceType == QUEEN || (pieceType == KING && j == 1)) return false;
 			else if (piece != 0) break;
 		}
 	}
@@ -634,6 +638,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 		for (int i = 0; i < 8; i += 2) {
 			bool check1 = true;
 			bool check2 = true;
+
+			// Check if square to left king is attacked
 			for	(int j = 1; j <= 7; j++) {
 				if (check1) {
 					int square = kingSquare - 1 + directionaloffsets[i] * j;
@@ -646,9 +652,12 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check1 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == ROOK || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check1) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check1 ) return false;
 					else if (piece != 0) check1 = false;
 				}
+
+				// Check if square two to the left of the king is attacked
 				if (check2) {
 					int sourcesquare = kingSquare - 2 + directionaloffsets[i] * j;
 
@@ -660,7 +669,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check2 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == ROOK || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check2) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check2) return false;
 					else if (piece != 0) check2 = false;
 				}
 
@@ -686,7 +696,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check1 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == BISHOP || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check1) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check1) return false;
 					else if (piece != 0) check1 = false;
 				}
 
@@ -701,7 +712,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check2 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == BISHOP || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check2) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check2) return false;
 					else if (piece != 0) check2 = false;
 				}
 
@@ -719,7 +731,7 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 			// If king is same colour as piece on square
 			if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) goto NextCheck;
 
-			// If piece is rook or queen
+			// If piece is knight
 			if (EXTRACT_PIECE_TYPE(piece) == KNIGHT) return false;
 			
 			NextCheck:
@@ -788,7 +800,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check1 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == ROOK || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check1) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check1) return false;
 					else if (piece != 0) check1 = false;
 				}
 				if (check2) {
@@ -802,7 +815,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check2 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == ROOK || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check2) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check2) return false;
 					else if (piece != 0) check2 = false;
 				}
 
@@ -827,7 +841,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check1 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == BISHOP || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check1) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check1) return false;
 					else if (piece != 0) check1 = false;
 				}
 
@@ -842,7 +857,8 @@ bool ChessEngine::verifyMove(int encodedMove, int encodedInfo, int* board, int* 
 					if (colourToPlay == EXTRACT_PIECE_COLOUR(piece)) check2 = false;
 
 					// If piece is rook or queen
-					if ((EXTRACT_PIECE_TYPE(piece) == BISHOP || EXTRACT_PIECE_TYPE(piece) == QUEEN) && check2) return false;
+					int pieceType = EXTRACT_PIECE_TYPE(piece);
+					if ((pieceType == ROOK || pieceType == QUEEN || (pieceType == KING && j == 1)) && check2) return false;
 					else if (piece != 0) check2 = false;
 				}
 

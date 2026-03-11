@@ -1,5 +1,7 @@
 #include "ChessEngine.h"
 
+#include "Globals.h"
+
 int nightoffsets[8] = { -33, -31, // 2 rows above
                                           -18, -14, // 1 row above
                                           18, 14,   // 1 row below
@@ -370,6 +372,9 @@ int ChessEngine::evaluate(int encodedInfo, int* board, int* piecePositions) {
     score += mobilityEvalWhite(board, piecePositions);
     score += mobilityEvalBlack(board, piecePositions);
 
+    #ifdef ENGINE_MOVE_COUNTER
+        counter++;
+    #endif
 
     return score;
 }

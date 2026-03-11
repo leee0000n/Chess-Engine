@@ -1,10 +1,10 @@
 #include "Chess.h"
 
-std::array<const int, 8> knightOffsetss = { -33, -31, // 2 rows above
+constexpr std::array<const int, 8> knightOffsetss = { -33, -31, // 2 rows above
 										  -18, -14, // 1 row above
 										  18, 14,   // 1 row below
 										  33, 31 };  // 2 rows below
-std::array<const int, 8> directionalOffsetss = { -16, -15, 1, 17, 16, 15, -1, -17 };
+constexpr std::array<const int, 8> directionalOffsetss = { -16, -15, 1, 17, 16, 15, -1, -17 };
 
 void Chess::generatePseudoLegalMoves() {
 	m_generatedMoves.fill(0);
@@ -69,6 +69,8 @@ void Chess::generatePseudoLegalMoves() {
 }
 
 inline void Chess::generatePawnWhite(int sourceSquare) {
+	int move = 0;
+
 	// // Regular piece move and pawn promotion
 	// if square in front of pawn is empty
 	if (m_board[sourceSquare - 16] == 0) {
@@ -76,12 +78,14 @@ inline void Chess::generatePawnWhite(int sourceSquare) {
 		// If pawn on back rank, generate promotion moves
 		if ((sourceSquare - 16) / 16 == 0) {
 			for (int piece = KNIGHT_PROMO; piece <= QUEEN_PROMO; piece++) {
-				m_generatedMoves[sourceSquare - 16] = ENCODE_MOVE(sourceSquare, sourceSquare - 16, piece, 0, 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare - 16, piece, 0, 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare - 16] = move;
 				
 			}
 		}
 		else {
-			m_generatedMoves[sourceSquare - 16] = ENCODE_MOVE(sourceSquare, sourceSquare - 16, QUIET_MOVE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare - 16, QUIET_MOVE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare - 16] = move;
 			
 
 			// If pawn is on starting square
@@ -89,7 +93,8 @@ inline void Chess::generatePawnWhite(int sourceSquare) {
 
 				// If square two squares away from pawn is empty
 				if (m_board[sourceSquare - 32] == 0) {
-					m_generatedMoves[sourceSquare - 32] = ENCODE_MOVE(sourceSquare, sourceSquare - 32, DOUBLE_PAWN_MOVE, 0, 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare - 32, DOUBLE_PAWN_MOVE, 0, 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare - 32] = move;
 					
 				}
 			}
@@ -104,12 +109,14 @@ inline void Chess::generatePawnWhite(int sourceSquare) {
 			// If target square is on back rank, generate promotion moves
 			if ((sourceSquare - 17) / 16 == 0) {
 				for (int piece = KNIGHT_CAPTURE_PROMO; piece <= QUEEN_CAPTURE_PROMO; piece++) {
-					m_generatedMoves[sourceSquare - 17] = ENCODE_MOVE(sourceSquare, sourceSquare - 17, piece, m_board[sourceSquare - 17], 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare - 17, piece, m_board[sourceSquare - 17], 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare - 17] = move;
 					
 				}
 			}
 			else {
-				m_generatedMoves[sourceSquare - 17] = ENCODE_MOVE(sourceSquare, sourceSquare - 17, CAPTURE, m_board[sourceSquare - 17], 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare - 17, CAPTURE, m_board[sourceSquare - 17], 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare - 17] = move;
 				
 			}
 		}
@@ -122,12 +129,14 @@ inline void Chess::generatePawnWhite(int sourceSquare) {
 			// If target square is on back rank, generate promotion moves
 			if ((sourceSquare - 15) / 16 == 0) {
 				for (int piece = KNIGHT_CAPTURE_PROMO; piece <= QUEEN_CAPTURE_PROMO; piece++) {
-					m_generatedMoves[sourceSquare - 15] = ENCODE_MOVE(sourceSquare, sourceSquare - 15, piece, m_board[sourceSquare - 15], 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare - 15, piece, m_board[sourceSquare - 15], 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare - 15] = move;
 					
 				}
 			}
 			else {
-				m_generatedMoves[sourceSquare - 15] = ENCODE_MOVE(sourceSquare, sourceSquare - 15, CAPTURE, m_board[sourceSquare - 15], 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare - 15, CAPTURE, m_board[sourceSquare - 15], 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare - 15] = move;
 				
 			}
 		}
@@ -135,19 +144,23 @@ inline void Chess::generatePawnWhite(int sourceSquare) {
 
 	// // Enpassant capture
 	// If square to left is enpassant square
-	if (m_enpassantSquare == sourceSquare - 1) {
-		m_generatedMoves[sourceSquare - 17] = ENCODE_MOVE(sourceSquare, sourceSquare - 17, ENPASSANT_CAPTURE, PAWN + BLACK, 127);
+	if (m_enpassantSquare == sourceSquare - 1 && EXTRACT_PIECE_COLOUR(m_board[m_enpassantSquare]) != m_colourToPlay) {
+		move = ENCODE_MOVE(sourceSquare, sourceSquare - 17, ENPASSANT_CAPTURE, PAWN + BLACK, 127);
+		if (verifyMove(move)) m_generatedMoves[sourceSquare - 17] = move;
 		
 	}
 
 	// If square to right is enpassant square
-	if (m_enpassantSquare == sourceSquare + 1) {
-		m_generatedMoves[sourceSquare - 15] = ENCODE_MOVE(sourceSquare, sourceSquare - 15, ENPASSANT_CAPTURE, PAWN + BLACK, 127);
+	if (m_enpassantSquare == sourceSquare + 1 && EXTRACT_PIECE_COLOUR(m_board[m_enpassantSquare]) != m_colourToPlay) {
+		move = ENCODE_MOVE(sourceSquare, sourceSquare - 15, ENPASSANT_CAPTURE, PAWN + BLACK, 127);
+		if (verifyMove(move)) m_generatedMoves[sourceSquare - 15] = move;
 		
 	}
 }
 
 inline void Chess::generatePawnBlack(int sourceSquare) {
+	int move = 0;
+
 	// // Regular piece move and pawn promotion
 	// if square in front of pawn is empty
 	if (m_board[sourceSquare + 16] == 0) {
@@ -155,12 +168,14 @@ inline void Chess::generatePawnBlack(int sourceSquare) {
 		// If pawn on back rank, generate promotion moves
 		if ((sourceSquare + 16) / 16 == 7) {
 			for (int piece = KNIGHT_PROMO; piece <= QUEEN_PROMO; piece++) {
-				m_generatedMoves[sourceSquare + 16] = ENCODE_MOVE(sourceSquare, sourceSquare + 16, piece, 0, 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare + 16, piece, 0, 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare + 16] = move;
 				
 			}
 		}
 		else {
-			m_generatedMoves[sourceSquare + 16] = ENCODE_MOVE(sourceSquare, sourceSquare + 16, QUIET_MOVE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare + 16, QUIET_MOVE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare + 16] = move;
 			
 
 			// If pawn is on starting square
@@ -168,7 +183,8 @@ inline void Chess::generatePawnBlack(int sourceSquare) {
 
 				// If square two squares away from pawn is empty
 				if (m_board[sourceSquare + 32] == 0) {
-					m_generatedMoves[sourceSquare + 32] = ENCODE_MOVE(sourceSquare, sourceSquare + 32, DOUBLE_PAWN_MOVE, 0, 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare + 32, DOUBLE_PAWN_MOVE, 0, 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare + 32] = move;
 					
 				}
 			}
@@ -183,12 +199,14 @@ inline void Chess::generatePawnBlack(int sourceSquare) {
 			// If target square is on back rank, generate promotion moves
 			if ((sourceSquare + 17) / 16 == 7) {
 				for (int piece = KNIGHT_CAPTURE_PROMO; piece <= QUEEN_CAPTURE_PROMO; piece++) {
-					m_generatedMoves[sourceSquare + 17] = ENCODE_MOVE(sourceSquare, sourceSquare + 17, piece, m_board[sourceSquare + 17], 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare + 17, piece, m_board[sourceSquare + 17], 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare + 17] = move;
 					
 				}
 			}
 			else {
-				m_generatedMoves[sourceSquare + 17] = ENCODE_MOVE(sourceSquare, sourceSquare + 17, CAPTURE, m_board[sourceSquare + 17], 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare + 17, CAPTURE, m_board[sourceSquare + 17], 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare + 17] = move;
 				
 			}
 		}
@@ -201,12 +219,14 @@ inline void Chess::generatePawnBlack(int sourceSquare) {
 			// If target square is on back rank, generate promotion moves
 			if ((sourceSquare + 15) / 16 == 7) {
 				for (int piece = KNIGHT_CAPTURE_PROMO; piece <= QUEEN_CAPTURE_PROMO; piece++) {
-					m_generatedMoves[sourceSquare + 15] = ENCODE_MOVE(sourceSquare, sourceSquare + 15, piece, m_board[sourceSquare + 15], 127);
+					move = ENCODE_MOVE(sourceSquare, sourceSquare + 15, piece, m_board[sourceSquare + 15], 127);
+					if (verifyMove(move)) m_generatedMoves[sourceSquare + 15] = move;
 					
 				}
 			}
 			else {
-				m_generatedMoves[sourceSquare + 15] = ENCODE_MOVE(sourceSquare, sourceSquare + 15, CAPTURE, m_board[sourceSquare + 15], 127);
+				move = ENCODE_MOVE(sourceSquare, sourceSquare + 15, CAPTURE, m_board[sourceSquare + 15], 127);
+				if (verifyMove(move)) m_generatedMoves[sourceSquare + 15] = move;
 				
 			}
 		}
@@ -214,19 +234,23 @@ inline void Chess::generatePawnBlack(int sourceSquare) {
 
 	// // Enpassant capture
 	// If square to left is enpassant square
-	if (m_enpassantSquare == sourceSquare - 1) {
-		m_generatedMoves[sourceSquare + 15] = ENCODE_MOVE(sourceSquare, sourceSquare + 15, ENPASSANT_CAPTURE, PAWN + WHITE, 127);
+	if (m_enpassantSquare == sourceSquare - 1 && EXTRACT_PIECE_COLOUR(m_board[m_enpassantSquare]) != m_colourToPlay) {
+		move = ENCODE_MOVE(sourceSquare, sourceSquare + 15, ENPASSANT_CAPTURE, PAWN + WHITE, 127);
+		if (verifyMove(move)) m_generatedMoves[sourceSquare + 15] = move;
 		
 	}
 
 	// If square to right is enpassant square
-	if (m_enpassantSquare == sourceSquare + 1) {
-		m_generatedMoves[sourceSquare + 17] = ENCODE_MOVE(sourceSquare, sourceSquare + 17, ENPASSANT_CAPTURE, PAWN + WHITE, 127);
+	if (m_enpassantSquare == sourceSquare + 1 && EXTRACT_PIECE_COLOUR(m_board[m_enpassantSquare]) != m_colourToPlay) {
+		move = ENCODE_MOVE(sourceSquare, sourceSquare + 17, ENPASSANT_CAPTURE, PAWN + WHITE, 127);
+		if (verifyMove(move)) m_generatedMoves[sourceSquare + 17] = move;
 		
 	}
 }
 
 inline void Chess::generateKnight(int sourceSquare) {
+	int move = 0;
+
 	for (int offset : knightOffsetss) {
 		int targetSquare = sourceSquare + offset;
 
@@ -239,104 +263,267 @@ inline void Chess::generateKnight(int sourceSquare) {
 			// If piece on the square is same colour
 			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) continue;
 
-			m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
-			
-			continue;
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+				
+			break;
 		}
-		// If move is not a capture
-		m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
 		
 	}
 }
 
 inline void Chess::generateDiagonal(int max, int sourceSquare) {
-	for (int i = 1; i < 8; i += 2) {
-		for (int j = 1; j < max + 1; j++) {
-			int targetSquare = sourceSquare + directionalOffsetss[i] * j;
+	int move = 0;
 
-			// Check if square is off m_board
-			if (targetSquare & 0x88) break;
+	int neg17DiagDistToEdge = std::min(sourceSquare / 16, sourceSquare % 16);
+	int neg15DiagDistToEdge = std::min(sourceSquare / 16, 7 - sourceSquare % 16);
+	int pos15DiagDistToEdge = std::min(7 - sourceSquare / 16, sourceSquare % 16);
+	int pos17DiagDistToEdge = std::min(7 - sourceSquare / 16, 7 - sourceSquare % 16);
 
-			// Check if there is piece on target square
-			if (m_board[targetSquare] != 0) {
+	for (int j = 1; j <= neg17DiagDistToEdge; j++) {
+		int targetSquare = sourceSquare - 17 * j;
 
-				// Check if target square contains piece of same colour
-				if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
 
-				m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
-				
-				break;
-			}
-			m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
-			
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
 		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	for (int j = 1; j <= neg15DiagDistToEdge; j++) {
+		int targetSquare = sourceSquare - 15 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	for (int j = 1; j <= pos15DiagDistToEdge; j++) {
+		int targetSquare = sourceSquare + 15 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	for (int j = 1; j <= pos17DiagDistToEdge; j++) {
+		int targetSquare = sourceSquare + 17 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
 	}
 }
 
 inline void Chess::generateSraight(int max, int sourceSquare) {
-	for (int i = 0; i < 8; i += 2) {
-		for (int j = 1; j < max + 1; j++) {
-			int targetSquare = sourceSquare + directionalOffsetss[i] * j;
+	int negVerticalDistToEdge = sourceSquare / 16;
+	int posVerticalDistToEdge = 7 - sourceSquare / 16;
+	int negHorizontalDistToEdge = sourceSquare % 16;
+	int posHorizontalDistToEdge = 7 - sourceSquare % 16;
 
-			// Check if square is off m_board
-			if (targetSquare & 0x88) break;
+	int move = 0;
 
-			// Check if there is piece on target square
-			if (m_board[targetSquare] != 0) {
+	// Vertical Negative
+	for (int j = 1; j <= negVerticalDistToEdge; j++) {
+		int targetSquare = sourceSquare + -16 * j;
 
-				// Check if target square contains piece of same colour
-				if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
 
-				m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
 				
-				break;
-			}
-			m_generatedMoves[targetSquare] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
-			
-
+			break;
 		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
 	}
+
+	// Prefetch squares into cache for horizontal moves
+	_mm_prefetch((char*)(m_board.data() + sourceSquare + 1), _MM_HINT_T0);
+
+	// Vertical Positive
+	for (int j = 1; j <= posVerticalDistToEdge; j++) {
+		int targetSquare = sourceSquare + 16 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	// Horizontal Negative
+	for (int j = 1; j <= negHorizontalDistToEdge; j++) {
+		int targetSquare = sourceSquare + -1 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	// Vertical Positive
+	for (int j = 1; j <= posHorizontalDistToEdge; j++) {
+		int targetSquare = sourceSquare + 1 * j;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) break;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			break;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
+
+	
 }
 
 inline void Chess::generateKingWhite(int sourceSquare) {
-	// Generate normal moves
-	generateDiagonal(1, sourceSquare);
-	generateSraight(1, sourceSquare);
+	int move = 0;
+
+	for (int i = 0; i < 8; i++) {
+		int targetSquare = sourceSquare + directionalOffsetss[i];
+
+		if (targetSquare & 0x88) continue;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) continue;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			continue;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
 
 	// Kingside castling
 	if (m_canWhiteKingsideCastle) {
 		// Check if no pieces inbetween
 		if (m_board[sourceSquare + 1] == 0 && m_board[sourceSquare + 2] == 0 && m_board[sourceSquare + 3] == WHITE + ROOK) {
-			m_generatedMoves[sourceSquare + 2] = ENCODE_MOVE(sourceSquare, sourceSquare + 2, KING_CASTLE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare + 2, KING_CASTLE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare + 2] = move;
 			
 		}
 	}
 	// Queenside castling
 	if (m_canWhiteQueensideCastle) {
 		if (m_board[sourceSquare - 1] == 0 && m_board[sourceSquare - 2] == 0 && m_board[sourceSquare - 3] == 0 && m_board[sourceSquare - 4] == WHITE + ROOK) {
-			m_generatedMoves[sourceSquare - 2] = ENCODE_MOVE(sourceSquare, sourceSquare - 2, QUEEN_CASTLE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare - 2, QUEEN_CASTLE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare - 2] = move;
 			
 		}
 	}
 }
 
 inline void Chess::generateKingBlack(int sourceSquare) {
-	// Generate normal moves
-	generateDiagonal(1, sourceSquare);
-	generateSraight(1, sourceSquare);
+	int move = 0;
+
+	for (int i = 0; i < 8; i++) {
+		int targetSquare = sourceSquare + directionalOffsetss[i];
+
+		if (targetSquare & 0x88) continue;
+
+		// Check if there is piece on target square
+		if (m_board[targetSquare] != 0) {
+
+			// Check if target square contains piece of same colour
+			if (EXTRACT_PIECE_COLOUR(m_board[targetSquare]) == m_colourToPlay) continue;
+
+			move = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, m_board[targetSquare], 127);
+			if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+
+			continue;
+		}
+		move = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+		if (verifyMove(move)) m_generatedMoves[targetSquare] = move;
+	}
 
 	// Kingside castling
 	if (m_canBlackKingsideCastle) {
 		// Check if no pieces inbetween
 		if (m_board[sourceSquare + 1] == 0 && m_board[sourceSquare + 2] == 0 && m_board[sourceSquare + 3] == BLACK + ROOK) {
-			m_generatedMoves[sourceSquare + 2] = ENCODE_MOVE(sourceSquare, sourceSquare + 2, KING_CASTLE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare + 2, KING_CASTLE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare + 2] = move;
 			
 		}
 	}
 	// Queenside castling
 	if (m_canBlackQueensideCastle) {
 		if (m_board[sourceSquare - 1] == 0 && m_board[sourceSquare - 2] == 0 && m_board[sourceSquare - 3] == 0 && m_board[sourceSquare - 4] == BLACK + ROOK) {
-			m_generatedMoves[sourceSquare - 2] = ENCODE_MOVE(sourceSquare, sourceSquare - 2, QUEEN_CASTLE, 0, 127);
+			move = ENCODE_MOVE(sourceSquare, sourceSquare - 2, QUEEN_CASTLE, 0, 127);
+			if (verifyMove(move)) m_generatedMoves[sourceSquare - 2] = move;
 			
 		}
 	}

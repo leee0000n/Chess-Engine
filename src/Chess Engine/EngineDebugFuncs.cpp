@@ -41,7 +41,7 @@ void ChessEngine::perft() {
 
 }
 
-void ChessEngine::perft(int depthLeft, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+void ChessEngine::perft(int depthLeft, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
 	// Recursion stop condition
 	if (depthLeft == 0) {
 		finalPosNum++;

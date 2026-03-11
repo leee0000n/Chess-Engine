@@ -40,7 +40,7 @@ int ChessEngine::playEngineMove() {
     return m_nextEncodedMove;
 }
 
-int ChessEngine::ABMax(int alpha, int beta, int depthLeft, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+int ChessEngine::ABMax(int alpha, int beta, int depthLeft, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
     if (depthLeft == 0) return evaluate(encodedInfo, board, piecePositions);
 
     // MinMax values
@@ -97,7 +97,7 @@ int ChessEngine::ABMax(int alpha, int beta, int depthLeft, int encodedInfo, int*
 }
 
 
-int ChessEngine::ABMin(int alpha, int beta, int depthLeft, int encodedInfo, int* board, int* piecePositions, int* lookupPiece) {
+int ChessEngine::ABMin(int alpha, int beta, int depthLeft, int encodedInfo, int* __restrict board, int* __restrict piecePositions, int* __restrict lookupPiece) {
     if (depthLeft == 0) return evaluate(encodedInfo, board, piecePositions);
 
     // MinMax values
@@ -152,6 +152,6 @@ int ChessEngine::ABMin(int alpha, int beta, int depthLeft, int encodedInfo, int*
     return bestValue;
 }
 
-void ChessEngine::moveOrdering(int* pseudoLegalMoves, int moveNum) {
+void ChessEngine::moveOrdering(int* __restrict pseudoLegalMoves, int moveNum) {
     
 }

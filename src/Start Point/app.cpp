@@ -8,7 +8,8 @@
 #include "ChessEngine.h"
 #include "LTimer.h"
 
-
+#include <locale>
+#include <format>
 #include <SDL.h>
 #include <iostream>
 
@@ -38,12 +39,28 @@ void chessGame() {
 		// Event handling 
 		if (!game.isEnginesTurnToPlay()) eventHandler.pollEvent(); // 1. d4 e6 2. e4 Qf6 3. Qg4 Nc6  ENPASSANT PROBLEM
 		else {
-			/*LTimer timer;
-			timer.start();*/
+
+			// Debugging stuff
+			#ifdef ENGINE_MOVE_TIME_TAKEN
+				LTimer timer;
+				timer.start();
+			#endif
+
 			game.playEngineMove();
-			/*int time = timer.getTicks();
-			std::cout << counter / time * 1000 << '\n';
-			std::cout << time << "\n";*/
+			int time = timer.getTicks();
+
+			// Debugging stuff
+			#ifdef ENGINE_MOVE_TIME_TAKEN
+				#ifdef ENGINE_MOVE_COUNTER
+					// Format numbers with commas
+					if (time > 0)
+						std::cout << std::format(std::locale("en_US.UTF-8"), "{:L}", counter / time * 1000) << " Leaf nodes per second" << '\n';
+					std::cout << std::format(std::locale("en_US.UTF-8"), "{:L}", counter) << " Leaf nodes reached" << "\n";
+					counter = 0;
+				#endif
+					std::cout << ((float) time) / 1000 << "s" << "\n";
+					std::cout << "\n";
+			#endif	
 		}
 
 		// Rendering
@@ -66,7 +83,12 @@ void app::run() {
 		}
 		else
 		{
-			chessGame();
+			#ifdef RUN_PERFT
+				ChessEngine eng;
+				eng.perft();
+			#else
+				chessGame();
+			#endif
 		}
 	}
 

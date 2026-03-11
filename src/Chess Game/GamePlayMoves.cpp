@@ -8,22 +8,6 @@ bool Chess::playMove(int moveData) {
 
 	makeMove(moveData);
 
-	// Check if move is legal
-	if (!verifyMove(moveData)) {
-		const int castleRights = EXTRACT_CASTLING_RIGHTS(oldInfo);
-		m_canWhiteQueensideCastle = castleRights & 1;
-		m_canWhiteKingsideCastle = castleRights & 2;
-		m_canBlackQueensideCastle = castleRights & 4;
-		m_canBlackKingsideCastle = castleRights & 8;
-
-		m_enpassantSquare = EXTRACT_ENPASSANT_SQUARE(oldInfo);
-		m_whiteKingSquare = EXTRACT_WHITE_KING_SQUARE(oldInfo);
-		m_blackKingSquare = EXTRACT_BLACK_KING_SQUARE(oldInfo);
-
-		unmakeMove(moveData);
-		return false;
-	}
-
 	// Change turn
 	m_colourToPlay = SWITCH_COLOUR(m_colourToPlay);
 

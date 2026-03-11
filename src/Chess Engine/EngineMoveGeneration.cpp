@@ -1,12 +1,14 @@
 #include "ChessEngine.h"
 
+#include <intrin.h>
+
 int knightOffsets[8] = {-33, -31, // 2 rows above
 										  -18, -14, // 1 row above
 										  18, 14,   // 1 row below
 										  33, 31 };  // 2 rows below
 int directionalOffsets[8] = {-16, -15, 1, 17, 16, 15, -1, -17};
 
-int ChessEngine::generatePseudoLegalMoves(int* pseudoLegalMoves, int*piecePositions, int*board, int*lookup, char castlingRights, int enpassantSquare, int colourToPlay, int blackKingSquare, int whiteKingSquare) {
+int ChessEngine::generatePseudoLegalMoves(int* __restrict pseudoLegalMoves, int* __restrict piecePositions, int* __restrict board, int* __restrict lookup, char castlingRights, int enpassantSquare, int colourToPlay, int blackKingSquare, int whiteKingSquare) {
 	int index = 0;
 	int start = colourToPlay == 1 ? 1 : 17;
 	for (int i = start; i < start + 16; i++) {
@@ -73,7 +75,7 @@ int ChessEngine::generatePseudoLegalMoves(int* pseudoLegalMoves, int*piecePositi
 	return index;
 }
 
-inline void ChessEngine::generatePawnWhite(int* pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int enpassantSquare, int*board, int* lookup) {
+inline void ChessEngine::generatePawnWhite(int* __restrict pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int enpassantSquare, int*board, int* lookup) {
 	// // Regular piece move and pawn promotion
 	// if square in front of pawn is empty
 	if (board[sourceSquare - 16] == 0) {
@@ -152,7 +154,7 @@ inline void ChessEngine::generatePawnWhite(int* pseudoLegalMoves, int& index, in
 	}
 }
 
-inline void ChessEngine::generatePawnBlack(int* pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int enpassantSquare, int*board, int* lookup) {
+inline void ChessEngine::generatePawnBlack(int* __restrict pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int enpassantSquare, int*board, int* lookup) {
 	// // Regular piece move and pawn promotion
 	// if square in front of pawn is empty
 	if (board[sourceSquare + 16] == 0) {
@@ -231,7 +233,7 @@ inline void ChessEngine::generatePawnBlack(int* pseudoLegalMoves, int& index, in
 	}
 }
 
-inline void ChessEngine::generateKnight(int* pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int*board, int* lookup) {
+inline void ChessEngine::generateKnight(int* __restrict pseudoLegalMoves, int& index, int sourceSquare, int colourToPlay, int*board, int* lookup) {
 	for (int offset : knightOffsets) {
 		int targetSquare = sourceSquare + offset;
 
@@ -254,7 +256,7 @@ inline void ChessEngine::generateKnight(int* pseudoLegalMoves, int& index, int s
 	}
 }
 
-inline void ChessEngine::generateDiagonal(int* pseudoLegalMoves, int& index, int max, int sourceSquare, int colourToPlay, int*board, int* lookup) {
+inline void ChessEngine::generateDiagonal(int* __restrict pseudoLegalMoves, int& index, int max, int sourceSquare, int colourToPlay, int*board, int* lookup) {
 	for (int i = 1; i < 8; i+=2) {
 		for (int j = 1; j < max + 1; j++) {
 			int targetSquare = sourceSquare + directionalOffsets[i] * j;
@@ -278,32 +280,81 @@ inline void ChessEngine::generateDiagonal(int* pseudoLegalMoves, int& index, int
 	}
 }
 
-inline void ChessEngine::generateSraight(int* pseudoLegalMoves, int& index, int max, int sourceSquare, int colourToPlay, int*board, int* lookup) {
+inline void ChessEngine::generateSraight(int* __restrict pseudoLegalMoves, int& index, int max, int sourceSquare, int colourToPlay, int*board, int* lookup) {
 	for (int i = 0; i < 8; i += 2) {
 		for (int j = 1; j < max + 1; j++) {
 			int targetSquare = sourceSquare + directionalOffsets[i] * j;
-
+	
 			// Check if square is off board
 			if (targetSquare & 0x88) break;
-
+	
 			// Check if there is piece on target square
 			if (board[targetSquare] != 0) {
-
+	
 				// Check if target square contains piece of same colour
 				if (EXTRACT_PIECE_COLOUR(board[targetSquare]) == colourToPlay) break;
-
+	
 				pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, board[targetSquare], lookup[targetSquare]);
 				index++;
 				break;
 			}
 			pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
 			index++;
-
+	
 		}
 	}
+
+	//// Vertical movemnts
+	//for (int i = 0; i < 8; i += 4) {
+	//	for (int j = 1; j < max + 1; j++) {
+	//		int targetSquare = sourceSquare + directionalOffsets[i] * j;
+
+	//		// Check if square is off board
+	//		if (targetSquare & 0x88) break;
+
+	//		// Check if there is piece on target square
+	//		if (board[targetSquare] != 0) {
+
+	//			// Check if target square contains piece of same colour
+	//			if (EXTRACT_PIECE_COLOUR(board[targetSquare]) == colourToPlay) break;
+
+	//			pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, board[targetSquare], lookup[targetSquare]);
+	//			index++;
+	//			break;
+	//		}
+	//		pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+	//		index++;
+
+	//	}
+	//}
+
+	//// Horizontal movements
+	//// Prefetch 64 bytes of board that source square is on, to improve cache performance when generating horizontal moves
+	//_mm_prefetch((char*)(board + sourceSquare), _MM_HINT_T0);
+	//for (int i = 2; i < 8; i += 4) {
+	//	for (int j = 1; j < max + 1; j++) {
+	//		int targetSquare = sourceSquare + directionalOffsets[i] * j;
+
+	//		// Check if square is off board
+	//		if (targetSquare & 0x88) break;
+
+	//		// Check if there is piece on target square
+	//		if (board[targetSquare] != 0) {
+
+	//			// Check if target square contains piece of same colour
+	//			if (EXTRACT_PIECE_COLOUR(board[targetSquare]) == colourToPlay) break;
+
+	//			pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, CAPTURE, board[targetSquare], lookup[targetSquare]);
+	//			index++;
+	//			break;
+	//		}
+	//		pseudoLegalMoves[index] = ENCODE_MOVE(sourceSquare, targetSquare, QUIET_MOVE, 0, 127);
+	//		index++;
+	//	}
+	//}
 }
 
-inline void ChessEngine::generateKingWhite(int* pseudoLegalMoves, int& index, int sourceSquare, int*board, int* lookup, char castlingRights) {
+inline void ChessEngine::generateKingWhite(int* __restrict pseudoLegalMoves, int& index, int sourceSquare, int*board, int* lookup, char castlingRights) {
 	// Generate normal moves
 	generateDiagonal(pseudoLegalMoves, index, 1, sourceSquare, WHITE_AS_1, board, lookup);
 	generateSraight(pseudoLegalMoves, index, 1, sourceSquare, WHITE_AS_1, board, lookup);
@@ -325,7 +376,7 @@ inline void ChessEngine::generateKingWhite(int* pseudoLegalMoves, int& index, in
 	}
 }
 
-inline void ChessEngine::generateKingBlack(int* pseudoLegalMoves, int& index, int sourceSquare, int*board, int* lookup, char castlingRights) {
+inline void ChessEngine::generateKingBlack(int* __restrict pseudoLegalMoves, int& index, int sourceSquare, int*board, int* lookup, char castlingRights) {
 	// Generate normal moves
 	generateDiagonal(pseudoLegalMoves, index, 1, sourceSquare, BLACK_AS_2, board, lookup);
 	generateSraight(pseudoLegalMoves, index, 1, sourceSquare, BLACK_AS_2, board, lookup);
