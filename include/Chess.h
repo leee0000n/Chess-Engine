@@ -117,6 +117,14 @@ public:
 	*/
 	bool verifyMove(int moveData);
 
+	/// <summary>
+	/// Check if square is being attacked by certain colour
+	/// </summary>
+	/// <param name="square"> Square to check </param>
+	/// <param name="oppositeColour"> Opposite colour to check</param>
+	/// <returns> True if square is being attacked</returns>
+	bool isSquareAttacked(int square, int oppositeColour);
+
 	/*
 	* Make move
 	*/
