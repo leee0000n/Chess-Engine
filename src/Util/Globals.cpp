@@ -13,4 +13,7 @@ LTexture gSpriteSheetTexture;
 // Game loop condition
 bool quit = false;
 
+#ifdef ENGINE_MOVE_COUNTER
+int counter = 0;
+#endif
 

@@ -17,4 +17,9 @@ extern LTexture gSpriteSheetTexture;
 
 // Game loop condition
 extern bool quit;
+
+#ifdef ENGINE_MOVE_COUNTER
+extern int counter;
+#endif
+
 #endif 
